@@ -70,7 +70,7 @@ atiendeSola(Persona, Dia, Hora) :-
     quienAtiendeV2(Persona, Dia, Hora),
     not((quienAtiendeV2(OtraPersona, Dia, Hora), OtraPersona \= Persona)).
 
-% PUNTO 4) posibilidades de atencion
+% PUNTO 4) posibilidades de                 % NO LO ENTENDI!!
 
 posibilidadesDeAtencion(Dia, Personas) :-
     quienAtiendeV2(Persona, Dia, _), % la Persona Tiene que Atender ese dia
@@ -83,3 +83,57 @@ combinar([Persona|PersonasPosibles], [Persona|Personas]) :-
 
 combinar([_|PersonasPosibles], Personas) :-
     combinar(PersonasPosibles, Personas).
+
+
+% PUNTO 5)
+
+% golosinas, en cuyo caso registramos el valor en plata
+% cigarrillos, de los cuales registramos todas las marcas de cigarrillos que se vendieron (ej: Marlboro y Particulares)
+% bebidas, en cuyo caso registramos si son alcohólicas y la cantidad
+
+% golosinas(ValorEnPlata)
+% cigarrillos(ListaDeMarcas)
+% bebidas(Alcoholicas/NO, Cantidad)
+
+% Queremos agregar las siguientes cláusulas:
+% - dodain hizo las siguientes ventas el lunes 10 de agosto: golosinas por $ 1200, cigarrillos Jockey, golosinas por $ 50
+% - dodain hizo las siguientes ventas el miércoles 12 de agosto: 8 bebidas alcohólicas, 1 bebida no-alcohólica, golosinas por $ 10
+
+% - martu hizo las siguientes ventas el miercoles 12 de agosto: golosinas por $ 1000, cigarrillos Chesterfield, Colorado y Parisiennes.
+
+% - lucas hizo las siguientes ventas el martes 11 de agosto: golosinas por $ 600.
+% - lucas hizo las siguientes ventas el martes 18 de agosto: 2 bebidas no-alcohólicas y cigarrillos Derby.
+
+%ventas(Persona, Dia, ProductosVendidos).
+ventas(dodain, dia(lunes, 10, agosto), [golosinas(1200), cigarrillos(jockey), golosinas(50)]).
+ventas(dodain, dia(miercoles, 12, agosto), [bebidas(alcoholicas, 8), bebidas(noAlcoholicas, 1), golosinas(10)]).
+ventas(martu, dia(miercoles, 12, agosto), [golosinas(1000), cigarrillos([chesterfield, colorado, parisiennes])]).
+ventas(lucas, dia(martes, 11, agosto), [golosinas(600)]).
+ventas(lucas, dia(martes, 18, agosto), [bebidas(noAlcoholicas, 2), cigarrillos(derby)]).
+
+% Queremos saber si una persona vendedora es suertuda, esto ocurre si para todos los días en los que vendió, la primera venta que hizo fue importante. 
+% Una venta es importante:
+% - en el caso de las golosinas, si supera los $ 100.
+% - en el caso de los cigarrillos, si tiene más de dos marcas.
+% - en el caso de las bebidas, si son alcohólicas o son más de 5.
+
+esSuertuda(Persona) :-
+    ventas(Persona, _, _),      % la persona tiene ventas!! (tengo que ligar antes de que entre al forall)
+    forall(ventas(Persona, _, [Venta|_]), ventaImportante(Venta)).  
+    % Para Todos los Dias, la primera venta, es importante!
+    
+ventaImportante(golosinas(Valor)) :- Valor > 100.
+ventaImportante(cigarrillos(ListaDeMarcas)) :- length(ListaDeMarcas, Cantidad), Cantidad > 2.
+ventaImportante(bebidas(alcoholicas, _)).
+ventaImportante(bebidas(_, Cantidad)) :- Cantidad > 5.
+ 
+
+
+
+
+
+
+
+
+
+
