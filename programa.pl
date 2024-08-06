@@ -72,5 +72,14 @@ atiendeSola(Persona, Dia, Hora) :-
 
 % PUNTO 4) posibilidades de atencion
 
-posibilidadesDeAtencion(Dia, Persona) :-
-    quienAtiendeV2(Persona, Dia, _).
+posibilidadesDeAtencion(Dia, Personas) :-
+    quienAtiendeV2(Persona, Dia, _), % la Persona Tiene que Atender ese dia
+    findall(Persona, distinct(Persona, quienAtiende(Persona, Dia, _)), PersonasPosibles),
+    combinar(PersonasPosibles, Personas).  
+    
+combinar([], []).
+combinar([Persona|PersonasPosibles], [Persona|Personas]) :-
+    combinar(PersonasPosibles, Personas).
+
+combinar([_|PersonasPosibles], Personas) :-
+    combinar(PersonasPosibles, Personas).
